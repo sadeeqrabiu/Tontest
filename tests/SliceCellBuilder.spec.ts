@@ -2,6 +2,7 @@ import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
 import { toNano } from '@ton/core';
 import { SliceCellBuilder } from '../wrappers/SliceCellBuilder';
 import '@ton/test-utils';
+import { sign } from 'crypto';
 
 describe('SliceCellBuilder', () => {
     let blockchain: Blockchain;
@@ -37,5 +38,31 @@ describe('SliceCellBuilder', () => {
     it('should deploy', async () => {
         // the check is done inside beforeEach
         // blockchain and sliceCellBuilder are ready to use
+    });
+
+    it('should chnage the values', async () => {
+        const coinNumberBefore = await sliceCellBuilder.getCoinNumber();
+        const coinAddressBefore = await sliceCellBuilder.getCoinAddress();
+
+        console.log("Coin number Before: ", coinNumberBefore);
+        console.log("coin Address Before:", coinAddressBefore);
+
+        const changeValueResult = await sliceCellBuilder.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.05')
+            },
+            "Change Coin Value"
+        );
+
+        const coinAddressAfter = await sliceCellBuilder.getCoinAddress();
+        const coinNumberAfter = await sliceCellBuilder.getCoinNumber();
+
+        console.log("Coin number Before: ", coinNumberAfter);
+        console.log("coin Address Before:", coinAddressAfter);
+
+
+        expect(coinAddressBefore).not.toEqualAddress(coinAddressAfter);
+        expect(coinNumberBefore).not.toEqual(coinNumberAfter);
     });
 });
