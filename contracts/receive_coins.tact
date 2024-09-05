@@ -31,7 +31,7 @@ contract ReceiveCoins with Deployable {
         self.val = self.val + 1;
 
         //return excess TOn to the sender 
-        self.reply("inrement refund".asComment());
+        self.reply("increment refund".asComment());
 
     }
 

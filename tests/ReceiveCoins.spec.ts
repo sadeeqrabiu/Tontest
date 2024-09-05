@@ -67,4 +67,28 @@ describe('ReceiveCoins', () => {
         expect(balance).toBeLessThanOrEqual(toNano('3'));
 
     });
+
+    it('should handle increment message', async() => {
+        let balance = await receiveCoins.getBalance();
+        console.log(`balace Before increment message: ${balance}`);
+
+
+        const sendResult = await receiveCoins.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.05')
+            },
+            'increment'
+        );
+
+        expect(sendResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: receiveCoins.address,
+            success: true
+        });
+
+        balance = await receiveCoins.getBalance();
+        console.log(`blace after increment message: ${balance}`);
+
+    });
 });
